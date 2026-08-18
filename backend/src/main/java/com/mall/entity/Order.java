@@ -23,7 +23,7 @@ public class Order {
 
     private BigDecimal totalAmount;
 
-    /** 0 待支付 1 已支付 2 已取消 */
+    /** 0 待支付 1 待发货 2 待收货 3 已完成 4 已取消 */
     private Integer status;
 
     private String receiverName;
@@ -31,6 +31,12 @@ public class Order {
     private String receiverPhone;
 
     private String receiverAddress;
+
+    private LocalDateTime payTime;
+
+    private LocalDateTime shipTime;
+
+    private LocalDateTime completeTime;
 
     private LocalDateTime createTime;
 

@@ -22,6 +22,14 @@ public class User {
 
     private String phone;
 
+    private String avatar;
+
+    /** 0 普通用户 1 管理员 */
+    private Integer role;
+
+    /** 1 正常 0 禁用 */
+    private Integer status;
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;

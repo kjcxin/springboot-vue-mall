@@ -36,7 +36,8 @@ public class AuthInterceptor implements HandlerInterceptor {
                 Claims claims = jwtUtil.parseToken(auth.substring(7));
                 Long userId = Long.valueOf(claims.getSubject());
                 String username = claims.get("username", String.class);
-                UserContext.set(userId, username);
+                Integer role = claims.get("role", Integer.class);
+                UserContext.set(userId, username, role);
                 return true;
             } catch (Exception e) {
                 writeError(response, 401, "登录已失效，请重新登录");

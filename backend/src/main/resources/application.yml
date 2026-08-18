@@ -28,4 +28,5 @@ mybatis-plus:
 mall:
   jwt:
     secret: mall-backend-jwt-secret-key-please-change-in-production-2024
-    expire: 86400   # token 有效期，单位秒（默认 24 小时）
+    expire: 86400           # token 有效期，单位秒（默认 24 小时）
+    remember-expire: 604800 # 记住登录有效期，单位秒（7 天）

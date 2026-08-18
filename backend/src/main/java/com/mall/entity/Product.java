@@ -23,7 +23,9 @@ public class Product {
 
     private Integer stock;
 
-    private String category;
+    private Integer sales;
+
+    private Long categoryId;
 
     private String image;
 

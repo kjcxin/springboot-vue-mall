@@ -1,6 +1,6 @@
 # Mall 商城 · 前后端分离电商系统
 
-一个用于学习与实践的前后端分离电商商城项目，涵盖用户认证、商品浏览、购物车、下单等核心电商流程。
+一个功能完整的前后端分离电商商城，用于学习与实践全栈开发。涵盖用户认证、商品浏览、购物车、订单状态机、收货地址、收藏、评价，以及完整的后台管理系统。
 
 ## 技术栈
 
@@ -11,37 +11,55 @@
 
 ## 功能特性
 
-- **用户认证**：注册 / 登录，JWT 无状态鉴权，BCrypt 密码加密
-- **商品浏览**：分页列表、关键词搜索、分类筛选、商品详情
-- **购物车**：基于 Redis Hash 存储，增删改查、数量累加与库存校验
-- **下单**：从购物车生成订单，事务内校验并扣减库存（防超卖）、生成订单与明细、清空购物车
-- **我的订单**：订单列表与明细查询
-- **统一响应**：统一返回结构、全局异常处理、参数校验、跨域配置
+### 用户侧（C 端）
+- **认证**：注册 / 登录（图形验证码 + 记住登录）、JWT 无状态鉴权、BCrypt 密码加密、修改密码
+- **商品**：多级分类、分页列表、关键词搜索、价格区间筛选、销量/价格排序、销量统计
+- **购物车**：基于 Redis Hash 存储、勾选结算、批量删除、数量修改
+- **订单**：完整状态机 `待支付 → 待发货 → 待收货 → 已完成 / 已取消`、模拟支付、取消恢复库存、确认收货
+- **收货地址**：地址簿增删改查、默认地址
+- **收藏**：收藏 / 取消 / 列表
+- **评价**：收货后评价（星级 + 文字）、商品评价列表
+- **个人中心**：资料修改、头像、密码
+
+### 管理端（B 端）
+- **数据看板**：商品/用户/订单/分类数、销售额、今日订单、待发货、最近订单
+- **商品管理**：增删改查、上下架、库存
+- **分类管理**：多级分类增删改查
+- **订单管理**：查询、发货、关闭（恢复库存）
+- **用户管理**：查询、禁用/启用
+
+## 默认账号
+
+| 账号 | 密码 | 角色 |
+| --- | --- | --- |
+| admin | admin123 | 管理员（首次启动自动创建） |
+
+> 普通用户请在注册页自行注册。
 
 ## 项目结构
 
 ```
 mall
-├── backend/                  # Spring Boot 后端
+├── backend/                          # Spring Boot 后端
 │   ├── src/main/java/com/mall
-│   │   ├── common/           # 统一响应、异常、分页
-│   │   ├── config/           # Web/MyBatis-Plus/Jackson 配置
-│   │   ├── security/         # JWT 工具、鉴权拦截器、用户上下文
-│   │   ├── entity/           # 实体
-│   │   ├── mapper/           # MyBatis-Plus Mapper
-│   │   ├── service/          # 业务逻辑
-│   │   ├── controller/       # REST 接口
-│   │   └── dto/              # 请求/响应对象
+│   │   ├── common/                   # 统一响应、异常、分页
+│   │   ├── config/                   # Web/MyBatis-Plus/Jackson 配置、管理员初始化
+│   │   ├── security/                 # JWT、鉴权拦截器、管理员拦截器、验证码
+│   │   ├── entity/                   # 实体（user/product/category/order/address/favorite/review）
+│   │   ├── mapper/                   # MyBatis-Plus Mapper
+│   │   ├── service/                  # 业务逻辑（含订单状态机、看板统计）
+│   │   ├── controller/               # C 端 + admin 端 REST 接口
+│   │   └── dto/                      # 请求/响应对象
 │   └── pom.xml
-├── frontend/                 # Vue 3 前端
+├── frontend/                         # Vue 3 前端
 │   └── src
-│       ├── api/              # Axios 封装与接口定义
-│       ├── stores/           # Pinia 状态（用户）
-│       ├── router/           # 路由与登录守卫
-│       ├── components/       # 导航栏
-│       └── views/            # 页面
-├── sql/init.sql              # 数据库初始化脚本（含种子商品）
-└── docker-compose.yml        # MySQL + Redis 一键启动
+│       ├── api/                      # Axios 封装与接口定义
+│       ├── stores/                   # Pinia 状态（用户）
+│       ├── router/                   # 路由 + 登录/管理员守卫
+│       ├── components/               # 导航栏
+│       └── views/                    # C 端页面 + admin 页面
+├── sql/init.sql                      # 数据库初始化脚本（含种子数据）
+└── docker-compose.yml                # MySQL + Redis 一键启动
 ```
 
 ## 快速开始
@@ -58,19 +76,16 @@ mall
 docker compose up -d
 ```
 
-首次启动会自动执行 `sql/init.sql`，创建数据库、表结构并写入 12 条种子商品数据。
-
-> 若不想用 Docker，也可本地安装 MySQL 8 与 Redis，手动执行 `sql/init.sql`。
+首次启动自动执行 `sql/init.sql`，创建数据库、表结构并写入种子数据（14 商品、12 分类）。
 
 ### 2. 启动后端
 
 ```bash
 cd backend
-# Windows 使用 mvnw.cmd，Linux/Mac 使用 ./mvnw
-./mvnw spring-boot:run
+./mvnw spring-boot:run     # Windows 使用 mvnw.cmd
 ```
 
-后端默认运行在 `http://localhost:8080`。数据库/Redis 连接信息见 `backend/src/main/resources/application.yml`（默认 `root/root`，可按需修改）。
+后端运行在 `http://localhost:8080`，首次启动自动创建管理员 `admin/admin123`。
 
 ### 3. 启动前端
 
@@ -80,38 +95,60 @@ npm install
 npm run dev
 ```
 
-前端默认运行在 `http://localhost:5173`，开发环境下 `/api` 请求会自动代理到后端 8080 端口。
+前端运行在 `http://localhost:5173`，`/api` 自动代理到后端。管理后台入口：`http://localhost:5173/admin`（需管理员登录）。
 
 ## API 一览
 
-| 方法 | 路径 | 说明 | 鉴权 |
-| --- | --- | --- | --- |
-| POST | `/api/auth/register` | 注册 | 否 |
-| POST | `/api/auth/login` | 登录，返回 token | 否 |
-| GET | `/api/products` | 商品分页/搜索/筛选 | 否 |
-| GET | `/api/products/{id}` | 商品详情 | 否 |
-| GET | `/api/cart` | 购物车列表 | 是 |
-| POST | `/api/cart` | 加入购物车 | 是 |
-| PUT | `/api/cart/{productId}` | 修改数量 | 是 |
-| DELETE | `/api/cart/{productId}` | 删除购物车项 | 是 |
-| POST | `/api/orders` | 创建订单 | 是 |
-| GET | `/api/orders` | 我的订单 | 是 |
-| GET | `/api/orders/{id}` | 订单详情 | 是 |
+### 公开接口
+| 方法 | 路径 | 说明 |
+| --- | --- | --- |
+| GET | `/api/captcha` | 获取图形验证码 |
+| POST | `/api/auth/register` | 注册 |
+| POST | `/api/auth/login` | 登录（验证码 + 记住登录） |
+| GET | `/api/categories` | 分类树 |
+| GET | `/api/products` | 商品分页/搜索/筛选/排序 |
+| GET | `/api/products/{id}` | 商品详情 |
+| GET | `/api/products/{id}/reviews` | 商品评价列表 |
+
+### 登录后接口
+| 方法 | 路径 | 说明 |
+| --- | --- | --- |
+| GET/POST/PUT/DELETE | `/api/cart` | 购物车 |
+| GET/POST | `/api/orders` | 订单列表 / 下单 |
+| PUT | `/api/orders/{id}/pay` | 模拟支付 |
+| PUT | `/api/orders/{id}/cancel` | 取消订单 |
+| PUT | `/api/orders/{id}/confirm` | 确认收货 |
+| GET/POST/PUT/DELETE | `/api/addresses` | 收货地址 |
+| GET/POST/DELETE | `/api/favorites` | 收藏 |
+| POST | `/api/reviews` | 评价 |
+| GET/PUT | `/api/user/profile` `/password` | 个人中心 |
+
+### 管理端接口（需管理员角色）
+| 方法 | 路径 | 说明 |
+| --- | --- | --- |
+| GET | `/api/admin/dashboard` | 数据看板 |
+| CRUD | `/api/admin/products` | 商品管理 |
+| CRUD | `/api/admin/categories` | 分类管理 |
+| GET/PUT | `/api/admin/orders` | 订单管理（发货/关闭） |
+| GET/PUT | `/api/admin/users` | 用户管理（禁用/启用） |
 
 鉴权方式：请求头携带 `Authorization: Bearer <token>`。
 
 ## 数据库设计
 
-- `user` 用户表
-- `product` 商品表
-- `orders` 订单表（`order` 为 MySQL 关键字，故用复数）
-- `order_item` 订单明细表
+- `user` 用户表（角色、状态、头像）
+- `category` 分类表（多级自关联）
+- `product` 商品表（分类、销量、上下架）
+- `address` 收货地址表
+- `favorite` 收藏表
+- `orders` / `order_item` 订单表（状态机、时间字段）
+- `review` 评价表
 
-购物车数据存储在 Redis（key 格式：`mall:cart:{userId}`，Hash 结构）。
+购物车数据存储在 Redis（key：`mall:cart:{userId}`，Hash 结构）；验证码存储在 Redis（5 分钟有效、一次性）。
 
 ## 说明
 
-- 该项目为学习实践项目，支付环节为「待支付」状态占位，未接入真实支付网关。
+- 支付为**模拟支付**（点击即支付成功），未接入真实支付网关，订单状态机可在此基础上扩展。
 - 商品图片使用 emoji 占位图标（与商品一一对应、离线可用），如需真实图片可将 `image` 字段替换为 URL 并改回 `<el-image>` 渲染。
 
 ## 许可证
