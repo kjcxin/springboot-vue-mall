@@ -156,6 +156,14 @@ npm run dev
 
 购物车数据存储在 Redis（key：`mall:cart:{userId}`，Hash 结构）；验证码存储在 Redis（5 分钟有效、一次性）。
 
+## 运行截图
+
+### 前台首页
+![前台首页](docs/screenshot-home.png)
+
+### 后台管理
+![后台管理](docs/screenshot-admin.png)
+
 ## 说明
 
 - 支付为**模拟支付**（点击即支付成功），未接入真实支付网关，订单状态机可在此基础上扩展。
