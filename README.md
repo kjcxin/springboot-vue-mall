@@ -64,21 +64,31 @@ mall
 
 ## 快速开始
 
-### 环境要求
+### 方式一：Docker 一键部署（推荐）
 
-- JDK 17+
-- Node.js 18+
-- Docker（用于启动 MySQL 与 Redis）
-
-### 1. 启动 MySQL 与 Redis
+只需 Docker，一条命令启动整套系统（MySQL + Redis + 后端 + 前端）：
 
 ```bash
-docker compose up -d
+docker compose up -d --build
+```
+
+- 前端：http://localhost
+- 后端：http://localhost:8080
+- 首次启动自动建表 + 灌种子数据 + 创建管理员 `admin/admin123`
+
+### 方式二：本地开发
+
+环境要求：JDK 17+、Node.js 18+、Docker（或本地 MySQL/Redis）。
+
+**1. 启动 MySQL 与 Redis**
+
+```bash
+docker compose up -d mysql redis
 ```
 
 首次启动自动执行 `sql/init.sql`，创建数据库、表结构并写入种子数据（14 商品、12 分类）。
 
-### 2. 启动后端
+**2. 启动后端**
 
 ```bash
 cd backend
@@ -87,7 +97,7 @@ cd backend
 
 后端运行在 `http://localhost:8080`，首次启动自动创建管理员 `admin/admin123`。
 
-### 3. 启动前端
+**3. 启动前端**
 
 ```bash
 cd frontend
