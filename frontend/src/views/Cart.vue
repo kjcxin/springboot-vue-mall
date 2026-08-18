@@ -11,9 +11,9 @@
         <el-table-column label="商品" min-width="300">
           <template #default="{ row }">
             <div class="cart-product">
-              <el-image :src="row.image" fit="cover" class="cart-img">
-                <template #error><div class="img-fallback">🛍️</div></template>
-              </el-image>
+              <div class="cart-img">
+                <span class="cart-emoji">{{ row.image }}</span>
+              </div>
               <span>{{ row.name }}</span>
             </div>
           </template>
@@ -114,8 +114,8 @@ onMounted(load)
 <style scoped>
 .page-title { margin-bottom: 16px; }
 .cart-product { display: flex; align-items: center; gap: 12px; }
-.cart-img { width: 60px; height: 60px; border-radius: 4px; flex-shrink: 0; }
-.img-fallback { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: #f0f2f5; font-size: 24px; }
+.cart-img { width: 60px; height: 60px; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #eef2ff, #dfe7ff); }
+.cart-emoji { font-size: 28px; line-height: 1; }
 .cart-footer {
   margin-top: 20px;
   display: flex;

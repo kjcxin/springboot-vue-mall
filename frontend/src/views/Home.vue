@@ -13,9 +13,9 @@
 
     <div v-loading="loading" class="product-grid">
       <el-card v-for="p in products" :key="p.id" class="product-card" shadow="hover" @click="goDetail(p.id)">
-        <el-image :src="p.image" fit="cover" class="product-img">
-          <template #error><div class="img-fallback">🛍️</div></template>
-        </el-image>
+        <div class="product-img">
+          <span class="product-emoji">{{ p.image }}</span>
+        </div>
         <div class="product-name">{{ p.name }}</div>
         <div class="product-category">{{ p.category }}</div>
         <div class="product-price">¥{{ p.price }}</div>
@@ -86,16 +86,14 @@ onMounted(() => loadProducts(1))
   width: 100%;
   height: 200px;
   border-radius: 4px;
-  display: block;
-}
-.img-fallback {
-  width: 100%;
-  height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f2f5;
-  font-size: 40px;
+  background: linear-gradient(135deg, #eef2ff, #dfe7ff);
+}
+.product-emoji {
+  font-size: 64px;
+  line-height: 1;
 }
 .product-name {
   margin-top: 10px;

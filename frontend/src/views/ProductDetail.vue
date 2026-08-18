@@ -2,9 +2,9 @@
   <div v-loading="loading">
     <el-card v-if="product">
       <div class="detail-body">
-        <el-image :src="product.image" fit="cover" class="detail-img">
-          <template #error><div class="img-fallback">🛍️</div></template>
-        </el-image>
+        <div class="detail-img">
+          <span class="detail-emoji">{{ product.image }}</span>
+        </div>
         <div class="detail-info">
           <h2 class="name">{{ product.name }}</h2>
           <div class="category">{{ product.category }} · 库存 {{ product.stock }}</div>
@@ -66,15 +66,14 @@ onMounted(load)
   height: 400px;
   border-radius: 8px;
   flex-shrink: 0;
-}
-.img-fallback {
-  width: 400px;
-  height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f2f5;
-  font-size: 80px;
+  background: linear-gradient(135deg, #eef2ff, #dfe7ff);
+}
+.detail-emoji {
+  font-size: 120px;
+  line-height: 1;
 }
 .detail-info {
   flex: 1;
@@ -106,6 +105,6 @@ onMounted(load)
 }
 @media (max-width: 768px) {
   .detail-body { flex-direction: column; }
-  .detail-img, .img-fallback { width: 100%; height: 280px; }
+  .detail-img { width: 100%; height: 280px; }
 }
 </style>
