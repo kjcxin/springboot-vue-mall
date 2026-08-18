@@ -75,6 +75,7 @@ public class OrderService {
         order.setUserId(userId);
         order.setTotalAmount(totalAmount);
         order.setStatus(0);
+        order.setCreateTime(LocalDateTime.now());
         order.setReceiverName(req.getReceiverName());
         order.setReceiverPhone(req.getReceiverPhone());
         order.setReceiverAddress(req.getReceiverAddress());
